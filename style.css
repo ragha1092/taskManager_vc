@@ -1,0 +1,203 @@
+/* Placeholder layout only — no design system */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  line-height: 1.4;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.app-header h1,
+.app-header p {
+  margin: 0;
+}
+
+.app-header p {
+  flex: 1;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.stat-label,
+.stat-value {
+  display: block;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+}
+
+.sidebar h2,
+.main h2 {
+  margin-top: 0;
+}
+
+.task-section {
+  margin-bottom: 24px;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filters button {
+  text-align: left;
+}
+
+.filters button[aria-pressed="true"] {
+  font-weight: bold;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-card {
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.task-card.completed .task-title {
+  text-decoration: line-through;
+}
+
+.task-title {
+  margin: 0 0 4px;
+}
+
+.task-meta {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.8em;
+  border: 1px solid #999;
+}
+
+.badge-personal { background: #dbeafe; }
+.badge-work { background: #dcfce7; }
+.badge-academics { background: #ede9fe; }
+.badge-family { background: #fce7f3; }
+.badge-fun { background: #fef9c3; }
+.badge-high-priority { background: #fee2e2; }
+
+.task-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.empty-state {
+  margin: 0;
+}
+
+dialog {
+  width: min(480px, 92vw);
+  border: 1px solid #ccc;
+  padding: 16px;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.category-pills button[aria-pressed="true"] {
+  font-weight: bold;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.form-error {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

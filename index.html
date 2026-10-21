@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow – Smart Student Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <h1>TaskFlow</h1>
+        <p>Smart Student Task Manager</p>
+        <button type="button" id="open-add-task">Add task</button>
+      </header>
+
+      <section class="dashboard" aria-label="Task overview">
+        <div class="stat">
+          <span class="stat-label">Total</span>
+          <span class="stat-value" id="stat-total">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Completed</span>
+          <span class="stat-value" id="stat-completed">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Due today</span>
+          <span class="stat-value" id="stat-due-today">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Overdue</span>
+          <span class="stat-value" id="stat-overdue">0</span>
+        </div>
+      </section>
+
+      <div class="layout">
+        <aside class="sidebar" aria-label="Category filters">
+          <h2>Categories</h2>
+          <nav class="filters" id="category-filters"></nav>
+        </aside>
+
+        <main class="main" id="task-board">
+          <p id="filter-label">Showing: All</p>
+
+          <section class="task-section" data-section="today">
+            <h2>Tasks Today</h2>
+            <p class="empty-state">No tasks in this view yet.</p>
+            <ul class="task-list"></ul>
+          </section>
+
+          <section class="task-section" data-section="week">
+            <h2>Tasks This Week</h2>
+            <p class="empty-state">No tasks in this view yet.</p>
+            <ul class="task-list"></ul>
+          </section>
+
+          <section class="task-section" data-section="upcoming">
+            <h2>Upcoming Tasks</h2>
+            <p class="empty-state">No tasks in this view yet.</p>
+            <ul class="task-list"></ul>
+          </section>
+
+          <section class="task-section" data-section="backlog">
+            <h2>Backlog</h2>
+            <p class="empty-state">No tasks in this view yet.</p>
+            <ul class="task-list"></ul>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="task-modal" aria-labelledby="modal-title">
+      <form id="task-form">
+        <h2 id="modal-title">Add task</h2>
+
+        <label>
+          Title
+          <input type="text" name="title" required maxlength="120" />
+        </label>
+
+        <label>
+          Description
+          <textarea name="description" rows="3" maxlength="500"></textarea>
+        </label>
+
+        <label>
+          Due date
+          <input type="date" name="dueDate" required />
+        </label>
+
+        <div class="time-row">
+          <label>
+            Start time
+            <input type="time" name="startTime" />
+          </label>
+          <label>
+            End time
+            <input type="time" name="endTime" />
+          </label>
+        </div>
+
+        <fieldset>
+          <legend>Categories</legend>
+          <div class="category-pills" id="category-pills"></div>
+        </fieldset>
+
+        <p class="form-error" id="form-error" hidden></p>
+
+        <div class="modal-actions">
+          <button type="button" id="cancel-add-task">Cancel</button>
+          <button type="submit" id="save-task">Save task</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
