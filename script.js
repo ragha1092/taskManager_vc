@@ -1,5 +1,9 @@
 const STORAGE_KEY = "taskflow-tasks";
-const CATEGORIES = ["Work", "Academics", "Personal", "Family", "Fun", "High Priority"];
+const CATEGORIES = ["Work", "Academics", "Personal", "Family", "Fun"];
+const LEGACY_HIGH_PRIORITY_CATEGORY = "High Priority"; // old category, now priority "High"
+const NO_PRIORITY = "None"; // not chosen: no priority badge on the card
+const PRIORITIES = [NO_PRIORITY, "Low", "Medium", "High"];
+const DEFAULT_PRIORITY = NO_PRIORITY;
 const FILTER_ALL = "All";
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -12,6 +16,7 @@ const els = {
   saveBtn: document.getElementById("save-task"),
   formError: document.getElementById("form-error"),
   pills: document.getElementById("category-pills"),
+  prioritySelect: document.getElementById("priority-select"),
   filters: document.getElementById("category-filters"),
   board: document.getElementById("task-board"),
   filterLabel: document.getElementById("filter-label"),
@@ -37,6 +42,7 @@ init();
 
 function init() {
   renderCategoryPills();
+  renderPriorityOptions();
   renderFilters();
   bindEvents();
   render();
@@ -65,7 +71,10 @@ function loadTasks() {
     const needsMigration = parsed.some(
       (task) =>
         task &&
-        ("categories" in task || !Array.isArray(task.category))
+        ("categories" in task ||
+          !Array.isArray(task.category) ||
+          task.category.includes(LEGACY_HIGH_PRIORITY_CATEGORY) ||
+          !PRIORITIES.includes(task.priority))
     );
     const normalized = parsed.map(normalizeTask).filter(isValidTask);
     if (needsMigration) {
@@ -84,18 +93,29 @@ function saveTasks() {
 function normalizeTask(task) {
   if (!task || typeof task !== "object") return task;
 
-  let category = [];
+  // Collect categories from every format used so far (string, array, or old "categories" array)
+  let rawCategories = [];
   if (Array.isArray(task.category)) {
-    category = uniqueCategories(task.category);
+    rawCategories = [...task.category];
   } else if (typeof task.category === "string") {
-    category = uniqueCategories([task.category]);
+    rawCategories = [task.category];
   }
   if (Array.isArray(task.categories)) {
-    category = uniqueCategories([...category, ...task.categories]);
+    rawCategories = [...rawCategories, ...task.categories];
+  }
+
+  // Old tasks used a "High Priority" category: it becomes priority "High".
+  // Tasks without any priority get the default one.
+  const wasHighPriority = rawCategories.includes(LEGACY_HIGH_PRIORITY_CATEGORY);
+  let priority = DEFAULT_PRIORITY;
+  if (PRIORITIES.includes(task.priority)) {
+    priority = task.priority;
+  } else if (wasHighPriority) {
+    priority = "High";
   }
 
   const { categories: _unusedCategories, ...rest } = task;
-  return { ...rest, category };
+  return { ...rest, category: uniqueCategories(rawCategories), priority };
 }
 
 function uniqueCategories(values) {
@@ -109,6 +129,7 @@ function isValidTask(task) {
     typeof task.title === "string" &&
     Array.isArray(task.category) &&
     task.category.every((category) => CATEGORIES.includes(category)) &&
+    PRIORITIES.includes(task.priority) &&
     typeof task.dueDate === "string" &&
     typeof task.completed === "boolean"
   );
@@ -138,6 +159,7 @@ function createTask(data) {
     title: data.title.trim(),
     description: data.description.trim(),
     category: uniqueCategories(data.category),
+    priority: PRIORITIES.includes(data.priority) ? data.priority : DEFAULT_PRIORITY,
     dueDate: data.dueDate,
     startTime: data.startTime || "",
     endTime: data.endTime || "",
@@ -159,12 +181,14 @@ function openModal(task) {
     els.form.dueDate.value = task.dueDate;
     els.form.startTime.value = task.startTime || "";
     els.form.endTime.value = task.endTime || "";
+    els.form.elements.priority.value = task.priority;
     selectedCategories = [...task.category];
   } else {
     editingTaskId = null;
     els.modalTitle.textContent = "Add task";
     els.saveBtn.textContent = "Save task";
     els.form.dueDate.value = todayIsoDate();
+    els.form.elements.priority.value = DEFAULT_PRIORITY;
     selectedCategories = [];
   }
 
@@ -206,6 +230,8 @@ function handleSubmit(event) {
   const dueDate = String(formData.get("dueDate") || "");
   const startTime = String(formData.get("startTime") || "");
   const endTime = String(formData.get("endTime") || "");
+  const priorityValue = String(formData.get("priority") || "");
+  const priority = PRIORITIES.includes(priorityValue) ? priorityValue : DEFAULT_PRIORITY;
 
   if (!title) {
     showFormError("Title is required.");
@@ -228,6 +254,7 @@ function handleSubmit(event) {
     title,
     description,
     category: selectedCategories,
+    priority,
     dueDate,
     startTime,
     endTime,
@@ -239,6 +266,7 @@ function handleSubmit(event) {
       task.title = fields.title;
       task.description = fields.description;
       task.category = uniqueCategories(fields.category);
+      task.priority = fields.priority;
       task.dueDate = fields.dueDate;
       task.startTime = fields.startTime || "";
       task.endTime = fields.endTime || "";
@@ -335,6 +363,14 @@ function updatePillSelection() {
   });
 }
 
+function renderPriorityOptions() {
+  els.prioritySelect.innerHTML = PRIORITIES.map(
+    (priority) =>
+      `<option value="${escapeHtml(priority)}">${escapeHtml(priority)}</option>`
+  ).join("");
+  els.prioritySelect.value = DEFAULT_PRIORITY;
+}
+
 function renderFilters() {
   const filters = [FILTER_ALL, ...CATEGORIES];
   els.filters.innerHTML = filters
@@ -396,6 +432,10 @@ function taskCardHtml(task) {
         `<span class="badge ${badgeClass(category)}">${escapeHtml(category)}</span>`
     )
     .join(" ");
+  const priorityBadge =
+    task.priority === NO_PRIORITY
+      ? ""
+      : `<span class="badge ${priorityBadgeClass(task.priority)}">Priority: ${escapeHtml(task.priority)}</span>`;
 
   return `
     <li class="task-card ${task.completed ? "completed" : ""}" data-id="${escapeHtml(task.id)}">
@@ -407,7 +447,7 @@ function taskCardHtml(task) {
       />
       <div>
         <h3 class="task-title">${escapeHtml(task.title)}</h3>
-        <div class="badge-row">${badges}</div>
+        <div class="badge-row">${badges} ${priorityBadge}</div>
         <p class="task-meta">Due ${escapeHtml(task.dueDate)}</p>
         ${time}
         ${description}
@@ -429,6 +469,13 @@ function formatTimeRange(startTime, endTime) {
 
 function badgeClass(category) {
   return `badge-${category.toLowerCase().replace(/\s+/g, "-")}`;
+}
+
+// "High" keeps the red look the old "High Priority" badge had; Low/Medium use plain .badge
+function priorityBadgeClass(priority) {
+  return priority === "High"
+    ? "badge-priority badge-high-priority"
+    : `badge-priority badge-priority-${priority.toLowerCase()}`;
 }
 
 function escapeHtml(value) {
