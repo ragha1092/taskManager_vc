@@ -1,6 +1,7 @@
 const STORAGE_KEY = "taskflow-tasks";
 const CATEGORIES = ["Work", "Academics", "Personal", "Family", "Fun", "High Priority"];
 const FILTER_ALL = "All";
+const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const els = {
   openAdd: document.getElementById("open-add-task"),
@@ -18,12 +19,19 @@ const els = {
   statCompleted: document.getElementById("stat-completed"),
   statDueToday: document.getElementById("stat-due-today"),
   statOverdue: document.getElementById("stat-overdue"),
+  calendarTitle: document.getElementById("calendar-title"),
+  calendarGrid: document.getElementById("calendar-grid"),
+  clearDate: document.getElementById("clear-date-filter"),
+  calendarNav: document.getElementById("calendar-nav"),
 };
 
 let tasks = loadTasks();
 let activeFilter = FILTER_ALL;
 let selectedCategories = [];
 let editingTaskId = null;
+let activeDate = null; // ISO date selected in the calendar, or null for no date filter
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
 
 init();
 
@@ -43,6 +51,9 @@ function bindEvents() {
   els.pills.addEventListener("click", handlePillClick);
   els.board.addEventListener("click", handleTaskListClick);
   els.board.addEventListener("change", handleTaskListChange);
+  els.calendarGrid.addEventListener("click", handleCalendarClick);
+  els.clearDate.addEventListener("click", clearDateFilter);
+  els.calendarNav.addEventListener("click", handleCalendarNav);
 }
 
 function loadTasks() {
@@ -281,8 +292,11 @@ function deleteTask(id) {
 }
 
 function getVisibleTasks() {
-  if (activeFilter === FILTER_ALL) return tasks;
-  return tasks.filter((task) => task.category.includes(activeFilter));
+  return tasks.filter(
+    (task) =>
+      (activeFilter === FILTER_ALL || task.category.includes(activeFilter)) &&
+      (!activeDate || task.dueDate === activeDate)
+  );
 }
 
 function getTaskSection(task) {
@@ -298,6 +312,11 @@ function getTaskSection(task) {
 function render() {
   renderFilters();
   renderDashboard();
+  try {
+    renderCalendar();
+  } catch (error) {
+    console.error("Calendar failed to render:", error);
+  }
   renderTaskSections();
 }
 
@@ -340,7 +359,9 @@ function renderDashboard() {
 
 function renderTaskSections() {
   const visible = getVisibleTasks();
-  els.filterLabel.textContent = `Showing: ${activeFilter}`;
+  els.filterLabel.textContent = activeDate
+    ? `Showing: ${activeFilter} · due ${activeDate}`
+    : `Showing: ${activeFilter}`;
 
   const grouped = {
     today: [],
@@ -416,4 +437,82 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+
+// calendar
+function handleCalendarClick(event) {
+  const button = event.target.closest("[data-date]");
+  if (!button) return;
+  const date = button.dataset.date;
+  activeDate = activeDate === date ? null : date; // click again to clear
+  render();
+}
+
+function handleCalendarNav(event) {
+  const button = event.target.closest("[data-nav]");
+  if (!button) return;
+  const first = new Date(viewYear, viewMonth + Number(button.dataset.nav), 1);
+  viewYear = first.getFullYear();
+  viewMonth = first.getMonth();
+  renderCalendar();
+}
+
+function clearDateFilter() {
+  activeDate = null;
+  render();
+}
+
+function renderCalendar() {
+  const today = todayIsoDate();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+  const leading = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7; // week starts Monday
+  const trailing = (7 - ((leading + daysInMonth) % 7)) % 7;
+
+  // Count tasks per due date (all tasks, regardless of completion or category)
+  const counts = {};
+  tasks.forEach((task) => {
+    counts[task.dueDate] = (counts[task.dueDate] || 0) + 1;
+  });
+
+  const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+  els.calendarTitle.textContent = monthLabel;
+
+  const cells = WEEKDAY_LABELS.map(
+    (label) => `<div class="calendar-weekday">${label}</div>`
+  );
+
+  // greyed-out days from the previous month
+  for (let i = leading - 1; i >= 0; i--) {
+    cells.push(`<div class="calendar-other">${daysInPrevMonth - i}</div>`);
+  }
+
+  // days of the shown month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const iso = toIsoDate(new Date(viewYear, viewMonth, day));
+    const count = counts[iso] || 0;
+    const classes = ["calendar-day"];
+    if (iso === today) classes.push("today");
+    const noun = count === 1 ? "task" : "tasks";
+    const label = `${day} ${monthLabel}, ${count} ${noun}${iso === today ? ", today" : ""}`;
+
+    cells.push(
+      `<button type="button" class="${classes.join(" ")}" data-date="${iso}" aria-pressed="${iso === activeDate}" aria-label="${escapeHtml(label)}">` +
+        `<span class="calendar-num">${day}</span>` +
+        `<span class="calendar-count">${count > 0 ? count : ""}</span>` +
+      `</button>`
+    );
+  }
+
+  // greyed-out days from the next month
+  for (let day = 1; day <= trailing; day++) {
+    cells.push(`<div class="calendar-other">${day}</div>`);
+  }
+
+  els.calendarGrid.innerHTML = cells.join("");
+  els.clearDate.hidden = !activeDate;
 }

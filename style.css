@@ -54,13 +54,114 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: 16px;
 }
 
 .sidebar h2,
 .main h2 {
   margin-top: 0;
+}
+
+/* Sidebar stays visible while the task list scrolls */
+.sidebar {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+/* Calendar (simple, light) */
+.calendar {
+  margin-top: 24px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.calendar-header button {
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 2px 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendar-weekday {
+  font-size: 0.7rem;
+  color: #666;
+  padding-bottom: 4px;
+}
+
+.calendar-other {
+  min-height: 44px;
+  padding-top: 4px;
+  font-size: 0.95rem;
+  color: #bbb;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 0 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  background: #f0f0f0;
+}
+
+.calendar-num {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.calendar-count {
+  min-height: 0.9em;
+  font-size: 0.65rem;
+  color: #555;
+}
+
+.calendar-day.today {
+  border-color: #e0527a;
+}
+
+.calendar-day.today .calendar-num,
+.calendar-day.today .calendar-count {
+  color: #e0527a;
+}
+
+.calendar-day[aria-pressed="true"] {
+  background: #e5e7eb;
+  border-color: #999;
+}
+
+#clear-date-filter {
+  margin-top: 10px;
 }
 
 .task-section {
@@ -194,6 +295,12 @@ label {
 
   .layout {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
   }
 
   .filters {
