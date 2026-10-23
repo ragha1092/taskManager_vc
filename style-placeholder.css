@@ -1,0 +1,310 @@
+/* Old placeholder look (kept as a backup). To use it, link this file in index.html instead of style.css */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  line-height: 1.4;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.app-header h1,
+.app-header p {
+  margin: 0;
+}
+
+.app-header p {
+  flex: 1;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.stat-label,
+.stat-value {
+  display: block;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+}
+
+.sidebar h2,
+.main h2 {
+  margin-top: 0;
+}
+
+/* Sidebar stays visible while the task list scrolls */
+.sidebar {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+/* Calendar (simple, light) */
+.calendar {
+  margin-top: 24px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.calendar-header button {
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 2px 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendar-weekday {
+  font-size: 0.7rem;
+  color: #666;
+  padding-bottom: 4px;
+}
+
+.calendar-other {
+  min-height: 44px;
+  padding-top: 4px;
+  font-size: 0.95rem;
+  color: #bbb;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 0 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  background: #f0f0f0;
+}
+
+.calendar-num {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.calendar-count {
+  min-height: 0.9em;
+  font-size: 0.65rem;
+  color: #555;
+}
+
+.calendar-day.today {
+  border-color: #e0527a;
+}
+
+.calendar-day.today .calendar-num,
+.calendar-day.today .calendar-count {
+  color: #e0527a;
+}
+
+.calendar-day[aria-pressed="true"] {
+  background: #e5e7eb;
+  border-color: #999;
+}
+
+#clear-date-filter {
+  margin-top: 10px;
+}
+
+.task-section {
+  margin-bottom: 24px;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filters button {
+  text-align: left;
+}
+
+.filters button[aria-pressed="true"] {
+  font-weight: bold;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-card {
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.task-card.completed .task-title {
+  text-decoration: line-through;
+}
+
+.task-title {
+  margin: 0 0 4px;
+}
+
+.task-meta {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.8em;
+  border: 1px solid #999;
+}
+
+.badge-personal { background: #dbeafe; }
+.badge-work { background: #dcfce7; }
+.badge-academics { background: #ede9fe; }
+.badge-family { background: #fce7f3; }
+.badge-fun { background: #fef9c3; }
+.badge-priority-high { background: #fee2e2; }
+
+.task-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.empty-state {
+  margin: 0;
+}
+
+dialog {
+  width: min(480px, 92vw);
+  border: 1px solid #ccc;
+  padding: 16px;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.category-pills button[aria-pressed="true"] {
+  font-weight: bold;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.form-error {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
