@@ -18,7 +18,7 @@ body {
   padding: 16px;
 }
 
-.app-header {
+.hero {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -26,12 +26,12 @@ body {
   margin-bottom: 16px;
 }
 
-.app-header h1,
-.app-header p {
+.hero h1,
+.hero p {
   margin: 0;
 }
 
-.app-header p {
+.hero p {
   flex: 1;
 }
 

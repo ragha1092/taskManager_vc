@@ -3,12 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskFlow – Smart student task manager</title>
-    <link rel="stylesheet" href="style.css?v=9" />
+    <title>TaskFlow – Smart Focus </title>
+    <link rel="stylesheet" href="style.css?v=12" />
   </head>
   <body>
     <div class="app">
-      <div class="top-bar">
+      <header class="top-bar">
+        <div class="brand">
+          <h1 class="wordmark">taskflow</h1>
+          <p class="tagline">Smart Focus </p>
+        </div>
         <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="4" />
@@ -18,13 +22,33 @@
             <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
           </svg>
         </button>
-      </div>
-
-      <header class="app-header">
-        <h1>TaskFlow</h1>
-        <p>Smart student task manager</p>
-        <button type="button" id="open-add-task">Add task</button>
       </header>
+
+      <section class="hero" aria-label="Today">
+        <p class="hero-weekday" id="hero-weekday"></p>
+        <p class="hero-date" id="hero-date"></p>
+        <p class="hero-summary" id="hero-summary"></p>
+        <form class="quick-add" id="quick-add-form" autocomplete="off">
+          <input
+            type="text"
+            id="quick-add-input"
+            placeholder="Try: Essay due Friday 14:00 #Academics !high"
+            maxlength="200"
+            aria-label="Quick add a task by typing a sentence"
+            aria-describedby="quick-add-preview"
+          />
+          <button type="submit" aria-label="Add task from sentence">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </form>
+        <div class="quick-add-preview" id="quick-add-preview" aria-live="polite"></div>
+        <div class="hero-actions">
+          <button type="button" class="add-task" id="open-add-task">Add task</button>
+          <button type="button" class="load-examples" id="load-examples" hidden>Load example tasks</button>
+        </div>
+      </section>
 
       <section class="dashboard" aria-label="Task overview">
         <div class="stat">
@@ -46,19 +70,21 @@
       </section>
 
       <div class="layout">
-        <aside class="sidebar" aria-label="Category filters">
-          <div class="sidebar-header">
-            <h2>Categories</h2>
-            <button type="button" class="edit-categories" id="edit-categories" aria-pressed="false">Edit</button>
-          </div>
-          <nav class="filters" id="category-filters"></nav>
-          <form class="new-category" id="new-category-form" autocomplete="off">
-            <input type="text" name="categoryName" placeholder="New category" maxlength="20" aria-label="New category name" />
-            <button type="submit">Add</button>
-          </form>
-          <p class="form-error" id="category-error" hidden></p>
+        <aside class="sidebar" aria-label="Filters">
+          <section class="panel" aria-label="Categories">
+            <div class="panel-header">
+              <h2>Categories</h2>
+              <button type="button" class="edit-categories" id="edit-categories" aria-pressed="false">Edit</button>
+            </div>
+            <nav class="filters" id="category-filters"></nav>
+            <form class="new-category" id="new-category-form" autocomplete="off">
+              <input type="text" name="categoryName" placeholder="New category" maxlength="20" aria-label="New category name" />
+              <button type="submit">Add</button>
+            </form>
+            <p class="form-error" id="category-error" hidden></p>
+          </section>
 
-          <section class="calendar" aria-label="Calendar">
+          <section class="panel calendar" aria-label="Calendar">
             <div class="calendar-header" id="calendar-nav">
               <button type="button" data-nav="-1" aria-label="Previous month">&lsaquo;</button>
               <h2 id="calendar-title">Calendar</h2>
@@ -73,26 +99,32 @@
           <p class="filter-label" id="filter-label">Showing: All</p>
 
           <section class="task-section" data-section="today">
-            <h2>Tasks today</h2>
-            <p class="empty-state">No tasks in this view yet.</p>
+            <h2>Tasks today <span class="section-count"></span></h2>
+            <p class="empty-state">Nothing due today.</p>
             <ul class="task-list"></ul>
           </section>
 
           <section class="task-section" data-section="week">
-            <h2>Tasks this week</h2>
-            <p class="empty-state">No tasks in this view yet.</p>
+            <h2>Tasks this week <span class="section-count"></span></h2>
+            <p class="empty-state">Nothing scheduled this week.</p>
             <ul class="task-list"></ul>
           </section>
 
           <section class="task-section" data-section="upcoming">
-            <h2>Upcoming tasks</h2>
-            <p class="empty-state">No tasks in this view yet.</p>
+            <h2>Upcoming tasks <span class="section-count"></span></h2>
+            <p class="empty-state">Nothing planned further ahead.</p>
             <ul class="task-list"></ul>
           </section>
 
           <section class="task-section" data-section="overdue">
-            <h2>Overdue tasks</h2>
-            <p class="empty-state">No tasks in this view yet.</p>
+            <h2>Overdue tasks <span class="section-count"></span></h2>
+            <p class="empty-state">You're all caught up.</p>
+            <ul class="task-list"></ul>
+          </section>
+
+          <section class="task-section" data-section="completed">
+            <h2>Completed earlier <span class="section-count"></span></h2>
+            <p class="empty-state">Finished tasks from past days show up here.</p>
             <ul class="task-list"></ul>
           </section>
         </main>
@@ -152,6 +184,40 @@
       </form>
     </dialog>
 
-    <script src="script.js?v=9"></script>
+    <dialog class="confirm-modal" id="confirm-modal" aria-labelledby="confirm-title">
+      <form method="dialog">
+        <h2 id="confirm-title">Delete?</h2>
+        <p class="confirm-message" id="confirm-message"></p>
+        <div class="modal-actions">
+          <button type="button" id="confirm-cancel">Cancel</button>
+          <button type="submit" class="danger" id="confirm-ok" value="confirm">Delete</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="focus-modal" id="focus-modal" aria-labelledby="focus-title">
+      <p class="focus-label">Focus session</p>
+      <h2 id="focus-title">Task</h2>
+      <div class="focus-durations" id="focus-durations">
+        <button type="button" data-minutes="15">15 min</button>
+        <button type="button" data-minutes="25">25 min</button>
+        <button type="button" data-minutes="50">50 min</button>
+      </div>
+      <div class="focus-ring">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="focus-ring-track" cx="100" cy="100" r="90" />
+          <circle class="focus-ring-progress" id="focus-ring-progress" cx="100" cy="100" r="90" />
+        </svg>
+        <p class="focus-time" id="focus-time" role="timer">25:00</p>
+      </div>
+      <p class="focus-status" id="focus-status" aria-live="polite"></p>
+      <div class="focus-actions">
+        <button type="button" class="focus-secondary" id="focus-stop">Cancel</button>
+        <button type="button" class="focus-primary" id="focus-toggle">Start</button>
+        <button type="button" class="focus-primary" id="focus-mark-done" hidden>Mark task done</button>
+      </div>
+    </dialog>
+
+    <script src="script.js?v=12"></script>
   </body>
 </html>

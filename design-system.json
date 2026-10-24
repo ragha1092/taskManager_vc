@@ -176,6 +176,26 @@
       "content": "bold short heading, one or two lines of secondary text, then stacked outlined pill buttons",
       "button": "pill with 1px subtle border, colored line icon on the left, white label"
     },
+    "hero_block": {
+      "content": "weekday as an uppercase label, the big thin date (hero_display), a one-line summary ('N tasks today · N more this week'), then the Add task pill",
+      "top_bar": "lowercase wordmark and a muted tagline on the left, theme toggle on the right"
+    },
+    "quick_add": {
+      "input": "560px glass pill under the hero summary (52px tall, blur 16px), round white submit button with an arrow inside on the right",
+      "syntax": "#category (prefix match ok), !high / !med / !low, today / tomorrow / weekday / next friday / in 3 days / 12/11 / 1 nov, 14:00 / 2pm / 2-4pm / at 9",
+      "preview": "live row of chips under the input showing the understood title, date, time, categories and priority; unknown tags and a missing category use a dashed muted chip",
+      "fallback": "if the title or category is missing, the full Add task form opens pre-filled"
+    },
+    "focus_timer": {
+      "entry": "filled 'Focus' chip as the first action on every open task card",
+      "window": "420px modal: uppercase 'Focus session' label, task title, 15/25/50 min chips (before start only), 240px progress ring (6px stroke, white on chip colour) with a thin 64px countdown inside",
+      "states": "ready (Start), running (Pause, countdown gently fades in and out), paused (Resume), done (ring fills up, soft chime, 'Mark task done')",
+      "saving": "time spent is saved on the task when the session ends or the window closes; cards show 'N min focused' in the muted meta line; the browser tab shows the countdown while running"
+    },
+    "sidebar_panels": "categories and calendar each sit in their own surface card (24px radius, 24px padding)",
+    "task_meta": "friendly date line, e.g. 'Fri 24 Oct · 10:00–12:00 · Due tomorrow'; the overdue hint is small red text",
+    "confirm_dialog": "small modal (400px) with a short title, one muted sentence, an outlined Cancel pill and a red Delete pill; used before every delete",
+    "section_order": ["Tasks today", "Tasks this week", "Upcoming tasks", "Overdue tasks", "Completed earlier"],
     "category_manager": {
       "header": "section label 'Categories' with a small text button on the right ('Edit', becomes 'Done')",
       "add": "pill text input 'New category' plus an outlined 'Add' pill, below the category chips",

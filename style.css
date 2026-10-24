@@ -1,6 +1,6 @@
 /* TaskFlow styles based on design-system.json (old look: style-placeholder.css) */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;800&display=swap");
 
 /* --- Design tokens --- */
 
@@ -23,6 +23,9 @@
   --info: #4da3ff;
   --success: #34d399;
   --backdrop: rgba(0, 0, 0, 0.6);
+  --hero-text: rgba(255, 255, 255, 0.8);
+  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --glass: rgba(23, 23, 23, 0.7);
 
   /* Aurora gradient (change these four to recolour the background) */
   --aurora-1: #3b82f6;
@@ -66,12 +69,14 @@
   --text-md: 18px;
   --text-lg: 22px;
   --text-xl: 26px;
-  --text-wordmark: 40px;
+  --text-wordmark: 28px;
+  --text-hero: clamp(72px, 16vw, 200px);
   --label-tracking: 0.14em;
 
   /* Motion */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --duration-hover: 150ms;
+  --duration-medium: 250ms;
 }
 
 /* --- Light theme --- */
@@ -90,6 +95,9 @@
   --active-bg: #0a0a0a;
   --active-text: #ffffff;
   --backdrop: rgba(0, 0, 0, 0.35);
+  --hero-text: rgba(10, 10, 10, 0.8);
+  --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.75);
   --aurora-opacity: 0.35;
   --cat-5: #84cc16;
 }
@@ -112,6 +120,7 @@ body {
   font-family: var(--font);
   font-size: var(--text-base);
   line-height: 1.5;
+  transition: background-color var(--duration-medium) var(--ease);
 }
 
 /* Aurora background */
@@ -147,6 +156,11 @@ p {
   margin: 0;
 }
 
+/* Keeps hidden elements hidden even when a rule sets display */
+[hidden] {
+  display: none !important;
+}
+
 button,
 input,
 select,
@@ -163,6 +177,10 @@ button {
     background-color var(--duration-hover) var(--ease),
     color var(--duration-hover) var(--ease),
     transform var(--duration-hover) var(--ease);
+}
+
+button:active {
+  transform: scale(0.97);
 }
 
 :focus-visible {
@@ -207,8 +225,28 @@ button {
 
 .top-bar {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   padding-top: var(--space-5);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.wordmark {
+  font-size: var(--text-wordmark);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.tagline {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
 }
 
 /* Theme toggle: sun in dark mode, moon in light mode */
@@ -240,34 +278,135 @@ button {
   display: block;
 }
 
-/* --- Header --- */
+/* --- Hero --- */
 
-.app-header {
+.hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-5) 0 var(--space-7);
+  padding: var(--space-6) 0 var(--space-7);
   text-align: center;
 }
 
-.app-header h1 {
-  font-size: var(--text-wordmark);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  text-transform: lowercase;
+.hero-weekday {
+  color: var(--hero-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
 }
 
-.app-header p {
+/* Big, thin date: the signature element from design-system.json */
+.hero-date {
+  color: var(--hero-text);
+  font-size: var(--text-hero);
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hero-summary {
+  margin-top: var(--space-3);
   font-size: var(--text-md);
   font-weight: 500;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* --- Quick add --- */
+
+.quick-add {
+  position: relative;
+  width: min(560px, 100%);
+  margin-top: var(--space-5);
+}
+
+.quick-add input[type="text"] {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 60px 0 var(--space-5);
+  border: 1px solid var(--border-dashed);
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  transition:
+    border-color var(--duration-hover) var(--ease),
+    box-shadow var(--duration-medium) var(--ease);
+}
+
+.quick-add input[type="text"]:focus {
+  border-color: var(--text-3);
+  box-shadow: var(--shadow-lift);
+}
+
+.quick-add button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.quick-add button:hover {
+  transform: scale(1.06);
+}
+
+.quick-add svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Live preview of what the sentence was understood as */
+.quick-add-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  max-width: 560px;
+  min-height: 28px;
+  margin-top: var(--space-3);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+
+.quick-add-preview kbd {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--chip);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--text-xs);
+}
+
+.preview-title {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.badge-missing {
+  border: 1px dashed var(--border-dashed);
+  background: transparent;
+  color: var(--text-3);
 }
 
 /* --- Buttons --- */
 
 /* Primary */
-.app-header button,
-.modal-actions button[type="submit"] {
+.add-task,
+.modal-actions button[type="submit"],
+.focus-primary {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -279,26 +418,36 @@ button {
   font-weight: 600;
 }
 
-.app-header button {
-  margin-top: var(--space-3);
-}
-
-.app-header button::before {
+.add-task::before {
   content: "+";
   font-size: var(--text-lg);
   line-height: 1;
 }
 
-.app-header button:hover,
-.modal-actions button[type="submit"]:hover {
+.add-task:hover,
+.modal-actions button[type="submit"]:hover,
+.focus-primary:hover {
   transform: scale(1.04);
+}
+
+.add-task:active,
+.modal-actions button[type="submit"]:active,
+.focus-primary:active {
+  transform: scale(0.98);
+}
+
+.modal-actions button.danger {
+  background: var(--danger);
+  color: #ffffff;
 }
 
 /* Secondary */
 .modal-actions button[type="button"],
 .task-actions button,
 .clear-date,
-.new-category button {
+.new-category button,
+.load-examples,
+.focus-secondary {
   min-height: 36px;
   padding: 0 var(--space-4);
   border: 1px solid var(--border-dashed);
@@ -308,7 +457,9 @@ button {
   font-weight: 500;
 }
 
-.modal-actions button[type="button"] {
+.modal-actions button[type="button"],
+.load-examples,
+.focus-secondary {
   min-height: var(--tap-size);
   padding: 0 var(--space-5);
 }
@@ -316,14 +467,17 @@ button {
 .modal-actions button[type="button"]:hover,
 .task-actions button:hover,
 .clear-date:hover,
-.new-category button:hover {
+.new-category button:hover,
+.load-examples:hover,
+.focus-secondary:hover {
   background: var(--surface-raised);
   color: var(--text);
 }
 
 /* Chips */
 .filters [data-filter],
-.category-pills button {
+.category-pills button,
+.focus-durations button {
   min-height: 36px;
   padding: 6px var(--space-4);
   border-radius: var(--radius-pill);
@@ -334,13 +488,15 @@ button {
 }
 
 .filters [data-filter]:not([aria-pressed="true"]):hover,
-.category-pills button:not([aria-pressed="true"]):hover {
+.category-pills button:not([aria-pressed="true"]):hover,
+.focus-durations button:not([aria-pressed="true"]):hover {
   color: var(--text);
 }
 
 /* Active state */
 .filters [data-filter][aria-pressed="true"],
 .category-pills button[aria-pressed="true"],
+.focus-durations button[aria-pressed="true"],
 .calendar-day[aria-pressed="true"] {
   background: var(--active-bg);
   color: var(--active-text);
@@ -348,7 +504,7 @@ button {
 
 /* --- Section labels --- */
 
-.sidebar-header h2,
+.panel-header h2,
 .task-section h2,
 .stat-label {
   color: var(--text-3);
@@ -360,6 +516,13 @@ button {
 
 .task-section h2 {
   margin-bottom: var(--space-4);
+}
+
+.section-count {
+  margin-left: var(--space-1);
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: 0.7;
 }
 
 .filter-label {
@@ -396,9 +559,20 @@ button {
   line-height: 1.2;
 }
 
+/* --- Sidebar panels --- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
 /* --- Categories --- */
 
-.sidebar-header {
+.panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -468,18 +642,10 @@ button {
 
 /* --- Calendar --- */
 
-.calendar {
-  margin-top: var(--space-4);
-  padding: var(--space-5);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-}
-
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-4);
 }
 
 .calendar-header h2 {
@@ -502,7 +668,7 @@ button {
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: var(--space-1);
   text-align: center;
 }
@@ -568,7 +734,6 @@ button {
 
 .clear-date {
   width: 100%;
-  margin-top: var(--space-4);
 }
 
 /* --- Task cards --- */
@@ -590,11 +755,17 @@ button {
   padding: var(--space-5);
   border-radius: var(--radius-card);
   background: var(--surface);
-  transition: background-color var(--duration-hover) var(--ease);
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    box-shadow var(--duration-medium) var(--ease),
+    transform var(--duration-medium) var(--ease),
+    opacity var(--duration-medium) var(--ease);
 }
 
 .task-card:hover {
   background: var(--surface-raised);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
 }
 
 .task-card input[type="checkbox"] {
@@ -613,16 +784,74 @@ button {
 }
 
 .task-title {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
   font-size: var(--text-lg);
   font-weight: 600;
   line-height: 1.2;
 }
 
-.task-meta {
-  margin-top: var(--space-1);
+.task-description {
+  margin-bottom: var(--space-3);
   color: var(--text-2);
   font-size: var(--text-sm);
+}
+
+.task-meta {
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+
+.due-hint {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.due-hint.overdue {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.focus-total {
+  color: var(--text-3);
+}
+
+/* Focus button on cards: filled chip so it stands out from Edit and Delete */
+.task-actions .focus-start {
+  border-color: transparent;
+  background: var(--chip);
+  color: var(--text);
+}
+
+/* Highlight for a task that was just added */
+.task-card.is-new {
+  animation: pop-in 900ms var(--ease);
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    box-shadow: 0 0 0 2px var(--text);
+  }
+
+  30% {
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 0 0 2px var(--text);
+  }
+}
+
+/* Fade-in when the filter or date changes */
+.main.is-switching .task-list,
+.main.is-switching .empty-state {
+  animation: fade-in var(--duration-medium) var(--ease);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
 .task-actions {
@@ -695,11 +924,51 @@ dialog {
   border-radius: var(--radius-card);
   background: var(--surface);
   color: var(--text);
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition:
+    opacity var(--duration-medium) var(--ease),
+    transform var(--duration-medium) var(--ease),
+    overlay var(--duration-medium) allow-discrete,
+    display var(--duration-medium) allow-discrete;
+}
+
+dialog[open] {
+  opacity: 1;
+  transform: none;
 }
 
 dialog::backdrop {
+  background: transparent;
+  transition:
+    background-color var(--duration-medium) var(--ease),
+    overlay var(--duration-medium) allow-discrete,
+    display var(--duration-medium) allow-discrete;
+}
+
+dialog[open]::backdrop {
   background: var(--backdrop);
   backdrop-filter: blur(4px);
+}
+
+/* Starting point for the open animation */
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  dialog[open]::backdrop {
+    background: transparent;
+  }
+}
+
+.confirm-modal {
+  width: min(400px, 92vw);
+}
+
+.confirm-message {
+  color: var(--text-2);
 }
 
 dialog form {
@@ -780,6 +1049,97 @@ textarea {
   margin-top: var(--space-2);
 }
 
+/* --- Focus timer --- */
+
+.focus-modal {
+  width: min(420px, 92vw);
+  text-align: center;
+}
+
+.focus-modal[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.focus-label {
+  color: var(--text-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+
+.focus-modal h2 {
+  margin-top: calc(-1 * var(--space-3));
+}
+
+.focus-durations {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.focus-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(240px, 70vw);
+  aspect-ratio: 1;
+}
+
+.focus-ring svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.focus-ring circle {
+  fill: none;
+  stroke-width: 6;
+}
+
+.focus-ring-track {
+  stroke: var(--chip);
+}
+
+/* 565.49 is the circle length (2 × π × 90); script.js moves the offset */
+.focus-ring-progress {
+  stroke: var(--text);
+  stroke-linecap: round;
+  stroke-dasharray: 565.49;
+  transition: stroke-dashoffset 250ms linear;
+}
+
+.focus-time {
+  font-size: 64px;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.focus-modal.is-running .focus-time {
+  animation: breathe 4s var(--ease) infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.focus-status {
+  min-height: 1.5em;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+
+.focus-actions {
+  display: flex;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
 /* --- Small screens --- */
 
 @media (max-width: 900px) {
@@ -788,7 +1148,7 @@ textarea {
   }
 
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .sidebar {
@@ -804,6 +1164,10 @@ textarea {
 }
 
 @media (max-width: 520px) {
+  .tagline {
+    display: none;
+  }
+
   .task-card {
     grid-template-columns: auto 1fr;
   }
@@ -819,5 +1183,6 @@ textarea {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+    animation: none !important;
   }
 }
