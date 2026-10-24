@@ -381,6 +381,10 @@ button:active {
   font-size: var(--text-sm);
 }
 
+.quick-add-hint {
+  line-height: 1.8;
+}
+
 .quick-add-preview kbd {
   padding: 1px 6px;
   border-radius: 6px;

@@ -529,7 +529,7 @@ function renderQuickAddPreview() {
   const text = els.quickAddInput.value.trim();
   if (!text) {
     els.quickAddPreview.innerHTML =
-      'Type a sentence. Use <kbd>#category</kbd>, <kbd>!high</kbd>, a day like <kbd>friday</kbd> and a time like <kbd>14:00</kbd>.';
+      '<span class="quick-add-hint">Type a sentence. Use <kbd>#category</kbd>, <kbd>!high</kbd>, a day like <kbd>friday</kbd> and a time like <kbd>14:00</kbd>.</span>';
     return;
   }
 
