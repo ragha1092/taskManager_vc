@@ -3,7 +3,7 @@
 A smart task manager for students. Type a task the way you'd say it, and TaskFlow fills in the date, time, category and priority for you. Then start a focus session and see how much time you've put into each task.
 
 **Try it:** https://ragha1092.github.io/taskManager_vc/
-**Demo video:** _add your YouTube link here_
+**Demo video:** https://vibeoff.ai/build/i-built-taskflow-a-student-task-manager-where-you-type-one-77b0d095 
 
 ![Quick add: typing one sentence creates a full task](docs/quick-add-demo.gif)
 
