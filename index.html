@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TaskFlow – Smart student task manager</title>
-    <link rel="stylesheet" href="style.css?v=8" />
+    <link rel="stylesheet" href="style.css?v=9" />
   </head>
   <body>
     <div class="app">
@@ -47,8 +47,16 @@
 
       <div class="layout">
         <aside class="sidebar" aria-label="Category filters">
-          <h2>Categories</h2>
+          <div class="sidebar-header">
+            <h2>Categories</h2>
+            <button type="button" class="edit-categories" id="edit-categories" aria-pressed="false">Edit</button>
+          </div>
           <nav class="filters" id="category-filters"></nav>
+          <form class="new-category" id="new-category-form" autocomplete="off">
+            <input type="text" name="categoryName" placeholder="New category" maxlength="20" aria-label="New category name" />
+            <button type="submit">Add</button>
+          </form>
+          <p class="form-error" id="category-error" hidden></p>
 
           <section class="calendar" aria-label="Calendar">
             <div class="calendar-header" id="calendar-nav">
@@ -144,6 +152,6 @@
       </form>
     </dialog>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
   </body>
 </html>

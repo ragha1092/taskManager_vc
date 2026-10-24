@@ -176,6 +176,12 @@
       "content": "bold short heading, one or two lines of secondary text, then stacked outlined pill buttons",
       "button": "pill with 1px subtle border, colored line icon on the left, white label"
     },
+    "category_manager": {
+      "header": "section label 'Categories' with a small text button on the right ('Edit', becomes 'Done')",
+      "add": "pill text input 'New category' plus an outlined 'Add' pill, below the category chips",
+      "delete": "in edit mode each category chip (not 'All') gets a 20px red circle with a white x at its top-right corner",
+      "colors": "each category gets one of 8 dot colours (cat-1 to cat-8): #4da3ff, #8b5cf6, #34d399, #e5564f, #b6e85a, #f59e0b, #14b8a6, #ec4899"
+    },
     "empty_state": {
       "container": "dashed 1px border, radius 20px, padding 40px",
       "text": "single centered sentence in muted text",

@@ -234,6 +234,16 @@ body {
 .badge-fun { background: #fef9c3; }
 .badge-priority-high { background: #fee2e2; }
 
+.filters:not(.editing) .delete-category {
+  display: none;
+}
+
+.new-category {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
 .task-actions {
   display: flex;
   flex-direction: column;

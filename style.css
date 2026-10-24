@@ -32,11 +32,14 @@
   --aurora-opacity: 0.55;
 
   /* Category dots */
-  --cat-work: #4da3ff;
-  --cat-academics: #8b5cf6;
-  --cat-personal: #34d399;
-  --cat-family: #e5564f;
-  --cat-fun: #b6e85a;
+  --cat-1: #4da3ff;
+  --cat-2: #8b5cf6;
+  --cat-3: #34d399;
+  --cat-4: #e5564f;
+  --cat-5: #b6e85a;
+  --cat-6: #f59e0b;
+  --cat-7: #14b8a6;
+  --cat-8: #ec4899;
 
   /* Spacing */
   --space-1: 4px;
@@ -88,7 +91,7 @@
   --active-text: #ffffff;
   --backdrop: rgba(0, 0, 0, 0.35);
   --aurora-opacity: 0.35;
-  --cat-fun: #84cc16;
+  --cat-5: #84cc16;
 }
 
 /* --- Base --- */
@@ -294,7 +297,8 @@ button {
 /* Secondary */
 .modal-actions button[type="button"],
 .task-actions button,
-.clear-date {
+.clear-date,
+.new-category button {
   min-height: 36px;
   padding: 0 var(--space-4);
   border: 1px solid var(--border-dashed);
@@ -311,13 +315,14 @@ button {
 
 .modal-actions button[type="button"]:hover,
 .task-actions button:hover,
-.clear-date:hover {
+.clear-date:hover,
+.new-category button:hover {
   background: var(--surface-raised);
   color: var(--text);
 }
 
 /* Chips */
-.filters button,
+.filters [data-filter],
 .category-pills button {
   min-height: 36px;
   padding: 6px var(--space-4);
@@ -328,13 +333,13 @@ button {
   font-weight: 500;
 }
 
-.filters button:not([aria-pressed="true"]):hover,
+.filters [data-filter]:not([aria-pressed="true"]):hover,
 .category-pills button:not([aria-pressed="true"]):hover {
   color: var(--text);
 }
 
 /* Active state */
-.filters button[aria-pressed="true"],
+.filters [data-filter][aria-pressed="true"],
 .category-pills button[aria-pressed="true"],
 .calendar-day[aria-pressed="true"] {
   background: var(--active-bg);
@@ -343,7 +348,7 @@ button {
 
 /* --- Section labels --- */
 
-.sidebar > h2,
+.sidebar-header h2,
 .task-section h2,
 .stat-label {
   color: var(--text-3);
@@ -391,12 +396,74 @@ button {
   line-height: 1.2;
 }
 
-/* --- Filters --- */
+/* --- Categories --- */
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit-categories {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  color: var(--text-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.edit-categories:hover,
+.edit-categories[aria-pressed="true"] {
+  color: var(--text);
+}
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+.filter-item {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Delete badge, only shown in edit mode */
+.delete-category {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--danger);
+  color: #ffffff;
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.filters.editing .delete-category {
+  display: grid;
+}
+
+.delete-category:hover {
+  transform: scale(1.1);
+}
+
+.new-category {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.new-category input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
 }
 
 /* --- Calendar --- */
@@ -585,17 +652,8 @@ button {
   font-weight: 500;
 }
 
-.badge-work { --dot: var(--cat-work); }
-.badge-academics { --dot: var(--cat-academics); }
-.badge-personal { --dot: var(--cat-personal); }
-.badge-family { --dot: var(--cat-family); }
-.badge-fun { --dot: var(--cat-fun); }
-
-.badge-work::before,
-.badge-academics::before,
-.badge-personal::before,
-.badge-family::before,
-.badge-fun::before {
+/* Category dot; the color comes from --dot set in script.js */
+.badge-category::before {
   content: "";
   width: 8px;
   height: 8px;
