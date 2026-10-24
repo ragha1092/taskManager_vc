@@ -20,8 +20,7 @@
   --active-bg: #ffffff;
   --active-text: #0a0a0a;
   --danger: #ef4444;
-  --info: #4da3ff;
-  --success: #34d399;
+  --on-danger: #ffffff;
   --backdrop: rgba(0, 0, 0, 0.6);
   --hero-text: rgba(255, 255, 255, 0.8);
   --shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.35);
@@ -60,6 +59,10 @@
   --radius-field: 12px;
   --radius-pill: 9999px;
   --tap-size: 44px;
+  --control-sm: 36px;
+  --icon-size: 20px;
+  --content-width: 1080px;
+  --quick-add-width: 560px;
 
   /* Typography */
   --font: "Inter", system-ui, sans-serif;
@@ -70,6 +73,7 @@
   --text-lg: 22px;
   --text-xl: 26px;
   --text-wordmark: 28px;
+  --text-timer: 64px;
   --text-hero: clamp(72px, 16vw, 200px);
   --label-tracking: 0.14em;
 
@@ -191,7 +195,7 @@ button:active {
 /* --- Page layout --- */
 
 .app {
-  max-width: 1080px;
+  max-width: var(--content-width);
   margin: 0 auto;
   padding: 0 var(--space-6) var(--space-8);
 }
@@ -265,8 +269,8 @@ button:active {
 }
 
 .theme-toggle svg {
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 
 .icon-moon,
@@ -323,7 +327,7 @@ button:active {
 
 .quick-add {
   position: relative;
-  width: min(560px, 100%);
+  width: min(var(--quick-add-width), 100%);
   margin-top: var(--space-5);
 }
 
@@ -374,7 +378,7 @@ button:active {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  max-width: 560px;
+  max-width: var(--quick-add-width);
   min-height: 28px;
   margin-top: var(--space-3);
   color: var(--text-2);
@@ -442,7 +446,7 @@ button:active {
 
 .modal-actions button.danger {
   background: var(--danger);
-  color: #ffffff;
+  color: var(--on-danger);
 }
 
 /* Secondary */
@@ -452,7 +456,7 @@ button:active {
 .new-category button,
 .load-examples,
 .focus-secondary {
-  min-height: 36px;
+  min-height: var(--control-sm);
   padding: 0 var(--space-4);
   border: 1px solid var(--border-dashed);
   border-radius: var(--radius-pill);
@@ -482,7 +486,7 @@ button:active {
 .filters [data-filter],
 .category-pills button,
 .focus-durations button {
-  min-height: 36px;
+  min-height: var(--control-sm);
   padding: 6px var(--space-4);
   border-radius: var(--radius-pill);
   background: var(--chip);
@@ -613,11 +617,11 @@ button:active {
   right: -6px;
   display: none;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   border-radius: var(--radius-pill);
   background: var(--danger);
-  color: #ffffff;
+  color: var(--on-danger);
   font-size: var(--text-sm);
   line-height: 1;
 }
@@ -638,7 +642,7 @@ button:active {
 .new-category input[type="text"] {
   flex: 1;
   min-width: 0;
-  min-height: 36px;
+  min-height: var(--control-sm);
   padding: 0 var(--space-4);
   border-radius: var(--radius-pill);
   font-size: var(--text-sm);
@@ -658,8 +662,8 @@ button:active {
 }
 
 .calendar-header button {
-  width: 36px;
-  height: 36px;
+  width: var(--control-sm);
+  height: var(--control-sm);
   border: 1px solid var(--border-dashed);
   border-radius: var(--radius-pill);
   font-size: var(--text-lg);
@@ -773,8 +777,8 @@ button:active {
 }
 
 .task-card input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   margin: 6px 0 0;
   accent-color: var(--text);
 }
@@ -1116,7 +1120,7 @@ textarea {
 }
 
 .focus-time {
-  font-size: 64px;
+  font-size: var(--text-timer);
   font-weight: 200;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;

@@ -1,9 +1,11 @@
 // --- Constants ---
 
+// Storage keys
 const TASKS_STORAGE_KEY = "taskflow-tasks";
 const CATEGORIES_STORAGE_KEY = "taskflow-categories";
 const THEME_STORAGE_KEY = "taskflow-theme";
-// Colors are numbers that match --cat-1 to --cat-8 in style.css
+
+// Categories and priorities (colors are numbers that match --cat-1 to --cat-8 in style.css)
 const DEFAULT_CATEGORIES = [
   { name: "Work", color: 1 },
   { name: "Academics", color: 2 },
@@ -13,43 +15,80 @@ const DEFAULT_CATEGORIES = [
 ];
 const CATEGORY_COLOR_COUNT = 8;
 const CATEGORY_NAME_MAX_LENGTH = 20;
+const FILTER_ALL = "All";
 const PRIORITIES = ["Low", "Medium", "High"];
 const DEFAULT_PRIORITY = "Medium";
 // Old category, now a priority level
 const LEGACY_HIGH_PRIORITY_CATEGORY = "High Priority";
-const FILTER_ALL = "All";
-const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+// Dates (WEEKDAY_KEYS index matches Date.getDay(), so Sunday is 0)
 const DAY_MS = 24 * 60 * 60 * 1000;
-const FOCUS_DEFAULT_MINUTES = 25;
-// Matches r="90" on the progress circle in index.html
-const FOCUS_RING_LENGTH = 2 * Math.PI * 90;
-const PAGE_TITLE = document.title;
-// Quick add: "!high", "!med", "!l" and so on
-const PRIORITY_ALIASES = { high: "High", h: "High", medium: "Medium", med: "Medium", m: "Medium", low: "Low", l: "Low" };
-// Index matches Date.getDay(), so Sunday is 0
+const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WEEKDAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 const MONTH_KEYS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+// Quick add: words it understands, such as "!high", "!med", "!l"
+const PRIORITY_ALIASES = { high: "High", h: "High", medium: "Medium", med: "Medium", m: "Medium", low: "Low", l: "Low" };
 const WEEKDAY_WORDS = "monday|mon|tuesday|tues|tue|wednesday|wed|thursday|thurs|thu|friday|fri|saturday|sat|sunday|sun";
 const MONTH_WORDS = "january|jan|february|feb|march|mar|april|apr|may|june|jun|july|jul|august|aug|september|sept|sep|october|oct|november|nov|december|dec";
 
+// Focus timer (90 is r="90" on the progress circle in index.html)
+const FOCUS_DEFAULT_MINUTES = 25;
+const FOCUS_RING_LENGTH = 2 * Math.PI * 90;
+const PAGE_TITLE = document.title;
+
 // --- Elements ---
 
+// Grouped by area, in the same order as the page
 const els = {
-  openAddBtn: document.getElementById("open-add-task"),
-  loadExamplesBtn: document.getElementById("load-examples"),
-  quickAddForm: document.getElementById("quick-add-form"),
-  quickAddInput: document.getElementById("quick-add-input"),
-  quickAddPreview: document.getElementById("quick-add-preview"),
-  cancelAddBtn: document.getElementById("cancel-add-task"),
-  saveBtn: document.getElementById("save-task"),
-  clearDateBtn: document.getElementById("clear-date-filter"),
+  // Top bar and hero
   themeBtn: document.getElementById("theme-toggle"),
-  editCategoriesBtn: document.getElementById("edit-categories"),
-  confirmOkBtn: document.getElementById("confirm-ok"),
-  confirmCancelBtn: document.getElementById("confirm-cancel"),
   heroWeekday: document.getElementById("hero-weekday"),
   heroDate: document.getElementById("hero-date"),
   heroSummary: document.getElementById("hero-summary"),
+  quickAddForm: document.getElementById("quick-add-form"),
+  quickAddInput: document.getElementById("quick-add-input"),
+  quickAddPreview: document.getElementById("quick-add-preview"),
+  openAddBtn: document.getElementById("open-add-task"),
+  loadExamplesBtn: document.getElementById("load-examples"),
+
+  // Dashboard
+  statTotal: document.getElementById("stat-total"),
+  statCompleted: document.getElementById("stat-completed"),
+  statDueToday: document.getElementById("stat-due-today"),
+  statOverdue: document.getElementById("stat-overdue"),
+
+  // Sidebar: categories and calendar
+  editCategoriesBtn: document.getElementById("edit-categories"),
+  filters: document.getElementById("category-filters"),
+  categoryForm: document.getElementById("new-category-form"),
+  categoryError: document.getElementById("category-error"),
+  calendarNav: document.getElementById("calendar-nav"),
+  calendarTitle: document.getElementById("calendar-title"),
+  calendarGrid: document.getElementById("calendar-grid"),
+  clearDateBtn: document.getElementById("clear-date-filter"),
+
+  // Task board
+  board: document.getElementById("task-board"),
+  filterLabel: document.getElementById("filter-label"),
+
+  // Task form dialog
+  taskModal: document.getElementById("task-modal"),
+  taskModalTitle: document.getElementById("modal-title"),
+  taskForm: document.getElementById("task-form"),
+  taskFormError: document.getElementById("form-error"),
+  categoryPills: document.getElementById("category-pills"),
+  cancelAddBtn: document.getElementById("cancel-add-task"),
+  saveBtn: document.getElementById("save-task"),
+
+  // Confirm dialog
+  confirmModal: document.getElementById("confirm-modal"),
+  confirmTitle: document.getElementById("confirm-title"),
+  confirmMessage: document.getElementById("confirm-message"),
+  confirmOkBtn: document.getElementById("confirm-ok"),
+  confirmCancelBtn: document.getElementById("confirm-cancel"),
+
+  // Focus timer dialog
   focusModal: document.getElementById("focus-modal"),
   focusTitle: document.getElementById("focus-title"),
   focusDurations: document.getElementById("focus-durations"),
@@ -59,26 +98,6 @@ const els = {
   focusToggleBtn: document.getElementById("focus-toggle"),
   focusStopBtn: document.getElementById("focus-stop"),
   focusMarkDoneBtn: document.getElementById("focus-mark-done"),
-  modal: document.getElementById("task-modal"),
-  modalTitle: document.getElementById("modal-title"),
-  form: document.getElementById("task-form"),
-  formError: document.getElementById("form-error"),
-  confirmModal: document.getElementById("confirm-modal"),
-  confirmTitle: document.getElementById("confirm-title"),
-  confirmMessage: document.getElementById("confirm-message"),
-  pills: document.getElementById("category-pills"),
-  filters: document.getElementById("category-filters"),
-  categoryForm: document.getElementById("new-category-form"),
-  categoryError: document.getElementById("category-error"),
-  board: document.getElementById("task-board"),
-  filterLabel: document.getElementById("filter-label"),
-  statTotal: document.getElementById("stat-total"),
-  statCompleted: document.getElementById("stat-completed"),
-  statDueToday: document.getElementById("stat-due-today"),
-  statOverdue: document.getElementById("stat-overdue"),
-  calendarNav: document.getElementById("calendar-nav"),
-  calendarTitle: document.getElementById("calendar-title"),
-  calendarGrid: document.getElementById("calendar-grid"),
 };
 
 // --- State ---
@@ -119,14 +138,14 @@ function init() {
 }
 
 function bindEvents() {
-  els.openAddBtn.addEventListener("click", () => openModal());
+  els.openAddBtn.addEventListener("click", () => openTaskModal());
   els.loadExamplesBtn.addEventListener("click", loadExampleTasks);
   els.quickAddForm.addEventListener("submit", handleQuickAddSubmit);
   els.quickAddInput.addEventListener("input", renderQuickAddPreview);
   els.quickAddInput.addEventListener("keydown", (event) => {
     if (event.key === "Escape") clearQuickAdd();
   });
-  els.cancelAddBtn.addEventListener("click", closeModal);
+  els.cancelAddBtn.addEventListener("click", closeTaskModal);
   els.clearDateBtn.addEventListener("click", clearDateFilter);
   els.themeBtn.addEventListener("click", toggleTheme);
   els.editCategoriesBtn.addEventListener("click", toggleCategoryEditing);
@@ -136,9 +155,9 @@ function bindEvents() {
   els.focusStopBtn.addEventListener("click", () => els.focusModal.close());
   els.focusMarkDoneBtn.addEventListener("click", markFocusTaskDone);
   els.focusModal.addEventListener("close", handleFocusClose);
-  els.modal.addEventListener("cancel", closeModal);
-  els.form.addEventListener("submit", handleSubmit);
-  els.pills.addEventListener("click", handlePillClick);
+  els.taskModal.addEventListener("cancel", closeTaskModal);
+  els.taskForm.addEventListener("submit", handleSubmit);
+  els.categoryPills.addEventListener("click", handlePillClick);
   els.filters.addEventListener("click", handleFilterClick);
   els.categoryForm.addEventListener("submit", handleCategorySubmit);
   els.board.addEventListener("click", handleTaskListClick);
@@ -509,7 +528,7 @@ function handleQuickAddSubmit(event) {
 
   // Missing pieces: open the full form with everything filled in
   if (!fields.title || fields.categories.length === 0) {
-    openModal(null, fields);
+    openTaskModal(null, fields);
     showFormError(fields.title ? "Pick a category for this task." : "Add a title for this task.");
     return;
   }
@@ -734,41 +753,41 @@ async function deleteTask(id) {
 // --- Modal and form ---
 
 // draft fills a new task form, for example from quick add
-function openModal(task, draft = {}) {
-  els.form.reset();
-  els.formError.hidden = true;
+function openTaskModal(task, draft = {}) {
+  els.taskForm.reset();
+  els.taskFormError.hidden = true;
 
   if (task) {
     editingTaskId = task.id;
-    els.modalTitle.textContent = "Edit task";
+    els.taskModalTitle.textContent = "Edit task";
     els.saveBtn.textContent = "Save changes";
-    els.form.title.value = task.title;
-    els.form.description.value = task.description || "";
-    els.form.dueDate.value = task.dueDate;
-    els.form.startTime.value = task.startTime || "";
-    els.form.endTime.value = task.endTime || "";
-    els.form.priority.value = task.priority;
+    els.taskForm.title.value = task.title;
+    els.taskForm.description.value = task.description || "";
+    els.taskForm.dueDate.value = task.dueDate;
+    els.taskForm.startTime.value = task.startTime || "";
+    els.taskForm.endTime.value = task.endTime || "";
+    els.taskForm.priority.value = task.priority;
     selectedCategories = [...task.categories];
   } else {
     editingTaskId = null;
-    els.modalTitle.textContent = "Add task";
+    els.taskModalTitle.textContent = "Add task";
     els.saveBtn.textContent = "Save task";
-    els.form.title.value = draft.title || "";
-    els.form.dueDate.value = draft.dueDate || todayIsoDate();
-    els.form.startTime.value = draft.startTime || "";
-    els.form.endTime.value = draft.endTime || "";
-    els.form.priority.value = draft.priority || DEFAULT_PRIORITY;
+    els.taskForm.title.value = draft.title || "";
+    els.taskForm.dueDate.value = draft.dueDate || todayIsoDate();
+    els.taskForm.startTime.value = draft.startTime || "";
+    els.taskForm.endTime.value = draft.endTime || "";
+    els.taskForm.priority.value = draft.priority || DEFAULT_PRIORITY;
     selectedCategories = draft.categories ? [...draft.categories] : [];
   }
 
   updatePillSelection();
-  els.modal.showModal();
-  els.form.title.focus();
+  els.taskModal.showModal();
+  els.taskForm.title.focus();
 }
 
-function closeModal() {
+function closeTaskModal() {
   editingTaskId = null;
-  els.modal.close();
+  els.taskModal.close();
 }
 
 // Shows the styled confirm dialog and resolves to true when the user confirms
@@ -790,7 +809,7 @@ function confirmAction({ title, message, confirmLabel }) {
 
 function handleSubmit(event) {
   event.preventDefault();
-  const formData = new FormData(els.form);
+  const formData = new FormData(els.taskForm);
   const title = String(formData.get("title") || "").trim();
   const description = String(formData.get("description") || "").trim();
   const dueDate = String(formData.get("dueDate") || "");
@@ -829,7 +848,7 @@ function handleSubmit(event) {
     const task = findTask(editingTaskId);
     if (task) Object.assign(task, cleanTaskFields(fields));
     saveTasks();
-    closeModal();
+    closeTaskModal();
     render();
     return;
   }
@@ -837,13 +856,13 @@ function handleSubmit(event) {
   const task = createTask(fields);
   tasks.push(task);
   saveTasks();
-  closeModal();
+  closeTaskModal();
   revealTask(task.id);
 }
 
 function showFormError(message) {
-  els.formError.hidden = false;
-  els.formError.textContent = message;
+  els.taskFormError.hidden = false;
+  els.taskFormError.textContent = message;
 }
 
 function handlePillClick(event) {
@@ -891,7 +910,7 @@ function handleTaskListClick(event) {
   const editBtn = event.target.closest("[data-edit]");
   if (editBtn) {
     const task = findTask(editBtn.dataset.edit);
-    if (task) openModal(task);
+    if (task) openTaskModal(task);
     return;
   }
 
@@ -947,7 +966,7 @@ function renderHero() {
 }
 
 function renderCategoryPills() {
-  els.pills.innerHTML = categoryNames()
+  els.categoryPills.innerHTML = categoryNames()
     .map(
       (name) =>
         `<button type="button" data-category="${escapeHtml(name)}">${escapeHtml(name)}</button>`
@@ -957,7 +976,7 @@ function renderCategoryPills() {
 }
 
 function updatePillSelection() {
-  els.pills.querySelectorAll("[data-category]").forEach((button) => {
+  els.categoryPills.querySelectorAll("[data-category]").forEach((button) => {
     const pressed = selectedCategories.includes(button.dataset.category);
     button.setAttribute("aria-pressed", String(pressed));
   });
